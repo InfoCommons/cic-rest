@@ -15,6 +15,9 @@ class Organization(models.Model):
     zip = models.CharField(max_length=1000, blank=True)
     country = models.CharField(max_length=1000, blank=True)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         db_table = 'organization'
 
@@ -32,6 +35,9 @@ class Person(models.Model):
     keywords = ArrayField(models.CharField(max_length=255, null=True, blank=True), null=True, blank=True)
     affiliations = models.ManyToManyField(Organization, blank=True)
 
+    def __str__(self):
+        return '{first_name} {last_name}'.format(first_name=self.first_name, last_name=self.last_name)
+
     class Meta:
         db_table = 'person'
 
@@ -43,6 +49,9 @@ class Funder(models.Model):
     id = models.IntegerField(primary_key=True)
     ror = models.CharField(max_length=255, null=True, blank=True)
     name = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         db_table = 'funder'
@@ -67,6 +76,9 @@ class Grant(models.Model):
     awardee_organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True, blank=True)
     abstract = models.TextField(null=True, blank=True)
     keywords = ArrayField(base_field=models.CharField(max_length=255, null=True, blank=True), null=True, blank=True)
+
+    def __str__(self):
+        return self.title
 
     class Meta:
         db_table = 'grant'
