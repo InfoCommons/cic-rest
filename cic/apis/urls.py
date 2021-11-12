@@ -1,12 +1,14 @@
 from rest_framework import routers, permissions
-from .views import PersonViewSet, OrganizationViewSet
+from .views import PersonViewSet, OrganizationViewSet, GrantViewSet
 from django.urls import path, include, re_path
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from rest_framework.documentation import include_docs_urls
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'people', PersonViewSet)
 router.register(r'organizations', OrganizationViewSet)
+router.register(r'grants', GrantViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
