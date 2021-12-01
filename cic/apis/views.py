@@ -4,6 +4,8 @@ from .serializers import PersonSerializer, OrganizationSerializer, CreatePersonS
     GrantSerializer, CreateGrantSerializer
 from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 
 
 @method_decorator(name='list', decorator=swagger_auto_schema(
@@ -68,6 +70,17 @@ class OrganizationViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'delete', 'put']
 
 
+REQUIRED_SCOPES_ALTS = {
+    'GET': [['auth-columbia', 'read'], ['auth-none', 'read']],
+    'HEAD': [['read']],
+    'OPTIONS': [['read']],
+    'POST': [
+        ['auth-columbia', 'demo-netphone-admin', 'create'],
+        ['auth-none', 'demo-netphone-admin', 'create'],
+    ]
+}
+
+
 @method_decorator(name='list', decorator=swagger_auto_schema(
     operation_description='All grants available in CIC',
     operation_summary='Get list of all grants',
@@ -98,6 +111,8 @@ class GrantViewSet(viewsets.ModelViewSet):
     destroy:
     Delete a given person instance
     """
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication,)
     queryset = Grant.objects.all()
 
     def get_serializer_class(self):

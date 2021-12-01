@@ -19,6 +19,10 @@ class FunderSerializer(serializers.ModelSerializer):
 class PersonSerializer(serializers.ModelSerializer):
     """Serializer for Person model"""
     affiliations = OrganizationSerializer(many=True, required=False, read_only=True)
+    emails = serializers.SerializerMethodField()
+
+    def get_emails(self, obj):
+        return ""
 
     class Meta:
         model = Person

@@ -30,7 +30,7 @@ class Person(models.Model):
     first_name = models.CharField(max_length=255, null=True, blank=True)
     last_name = models.CharField(max_length=255, null=True, blank=True)
     orcid = models.CharField(max_length=255, null=True, blank=True)
-    emails = models.CharField(max_length=255, null=True, blank=True)
+    emails = models.TextField(null=True, blank=True)
     private_emails = models.CharField(max_length=255, null=True, blank=True)
     keywords = ArrayField(models.CharField(max_length=255, null=True, blank=True), null=True, blank=True)
     affiliations = models.ManyToManyField(Organization, blank=True)
@@ -82,3 +82,61 @@ class Grant(models.Model):
 
     class Meta:
         db_table = 'grant'
+
+
+class Publication(models.Model):
+    """
+    Represents Publication table in the DB
+    """
+    id = models.IntegerField(primary_key=True)
+    doi = models.CharField(max_length=255, blank=True, null=True)
+    title = models.TextField(null=True, blank=True)
+    authors = models.ManyToManyField(Person, blank=True)
+    grants = models.ManyToManyField(Grant, blank=True)
+    issn = models.CharField(max_length=255, blank=True, null=True)
+    keywords = ArrayField(base_field=models.CharField(max_length=255, null=True, blank=True), null=True, blank=True)
+    language = models.CharField(max_length=255, blank=True, null=True)
+    publication_date = models.DateField(null=True, blank=True)
+    type = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'publication'
+
+
+class Dataset(models.Model):
+    """
+    Represents Dataset table in the DB
+    """
+    id = models.IntegerField(primary_key=True)
+    doi = models.CharField(max_length=255, blank=True, null=True)
+    title = models.TextField(null=True, blank=True)
+    download_path = models.CharField(max_length=255, blank=True, null=True)
+    size = models.CharField(max_length=255, blank=True, null=True)
+    authors = models.ManyToManyField(Person, blank=True)
+    grants = models.ManyToManyField(Grant, blank=True)
+    publications = models.ManyToManyField(Publication, blank=True)
+
+    class Meta:
+        db_table = 'dataset'
+
+
+class Asset(models.Model):
+    """
+    Represents Asset table in the DB
+    """
+    id = models.IntegerField(primary_key=True)
+    doi = models.CharField(max_length=255, blank=True, null=True)
+    filename = models.CharField(max_length=255, blank=True, null=True)
+    download_path = models.CharField(max_length=255, blank=True, null=True)
+    size = models.CharField(max_length=255, blank=True, null=True)
+    author_id = models.IntegerField(blank=True, null=True)
+    grant_id = models.IntegerField(blank=True, null=True)
+    publication_id = models.IntegerField(blank=True, null=True)
+    dataset_id = models.IntegerField(blank=True, null=True)
+    organization_id = models.IntegerField(blank=True, null=True)
+    keywords = ArrayField(base_field=models.CharField(max_length=255, null=True, blank=True), null=True, blank=True)
+    mime_type = models.CharField(max_length=255, blank=True, null=True)
+    checksum = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'asset'
